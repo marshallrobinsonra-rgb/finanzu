@@ -91,7 +91,7 @@ function LoginScreen({ onLogin }) {
   const handleLogin = () => {
     if (!user || !pass) { setErr("Completa todos los campos."); return; }
     setErr(""); setLoading(true);
-    setTimeout(() => { setLoading(false); onLogin({ nombre: "Ana Gómez", empresa: "Finanzu Analytics", plan: "premium" }); }, 1400);
+    setTimeout(() => { setLoading(false); onLogin({ nombre: "Marshall Robinson", empresa: "Finanzu Analytics", plan: "premium" }); }, 1400);
   };
   return (
     <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#0a0e1a", position: "relative", overflow: "hidden", fontFamily: "'Segoe UI', system-ui, sans-serif" }}>
