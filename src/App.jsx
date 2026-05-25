@@ -22,10 +22,14 @@ function generarAmortizacion(monto, tasaAnual, plazoMeses) {
 
 function analizarViabilidad(cuota, ingresosMensuales, gastosMensuales) {
   const ingresoNeto = ingresosMensuales - gastosMensuales;
-  const capacidadPago = ingresoNeto * 0.35;
+  const capacidadPago = Math.max(0, ingresoNeto) * 0.35;
   const porcentajeEndeudamiento = (cuota / ingresosMensuales) * 100;
   let estado, mensaje, color;
-  if (cuota <= capacidadPago && porcentajeEndeudamiento <= 30) {
+  if (ingresoNeto <= 0) {
+    estado = "noViable";
+    mensaje = "Los gastos superan los ingresos. Adquirir un crédito adicional no es recomendable.";
+    color = "#ef4444";
+  } else if (cuota <= capacidadPago && porcentajeEndeudamiento <= 30) {
     estado = "viable"; mensaje = "El crédito es financieramente viable para su empresa."; color = "#22c55e";
   } else if (porcentajeEndeudamiento <= 40) {
     estado = "riesgoso"; mensaje = "Existe un riesgo moderado de endeudamiento. Evalúe cuidadosamente."; color = "#f59e0b";
@@ -480,7 +484,6 @@ const simular = () => {
   if (form.monto <= 0 || form.tasa <= 0 || form.plazo <= 0) { setErr("Valores deben ser mayores a 0."); return; }
   if (form.ingresos < 0) { setErr("Los ingresos no pueden ser negativos."); return; }
   if (form.gastos < 0) { setErr("Los gastos no pueden ser negativos."); return; }
-  if (form.gastos >= form.ingresos) { setErr("Los gastos deben ser menores a los ingresos."); return; }
   setErr("");
   const cuota = calcularCuota(form.monto, form.tasa, form.plazo);
   const tabla = generarAmortizacion(form.monto, form.tasa, form.plazo);
