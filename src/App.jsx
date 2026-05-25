@@ -221,20 +221,27 @@ function InputField({ label, value, onChange, type = "text", prefix, min, max, s
     const parsed = parseFloat(rawValue);
     if (!isNaN(parsed) && parsed !== value) setRawValue(String(value));
   }, [value]);
-  const handleChange = (e) => {
-    const raw = e.target.value;
-    if (type !== "number") { onChange(raw); return; }
-    setRawValue(raw);
-    const parsed = parseFloat(raw);
-    if (!isNaN(parsed)) onChange(parsed);
-  };
+const handleChange = (e) => {
+  const raw = e.target.value;
+  if (type !== "number") { onChange(raw); return; }
+  if (raw.includes("-")) return; // bloquea negativos al escribir
+  setRawValue(raw);
+  const parsed = parseFloat(raw);
+  if (!isNaN(parsed)) onChange(parsed);
+};
   const handleBlur = () => {
-    if (type === "number") {
-      const parsed = parseFloat(rawValue);
-      if (isNaN(parsed) || parsed === 0) { const fallback = min || 0; setRawValue(String(fallback)); onChange(fallback); }
-      else { setRawValue(String(parsed)); onChange(parsed); }
+  if (type === "number") {
+    const parsed = parseFloat(rawValue);
+    if (isNaN(parsed) || parsed < 0) {
+      const fallback = min || 0;
+      setRawValue(String(fallback));
+      onChange(fallback);
+    } else {
+      setRawValue(String(parsed));
+      onChange(parsed);
     }
-  };
+  }
+};
   return (
     <div style={{ marginBottom: 16 }}>
       <label style={{ display: "block", color: "rgba(255,255,255,0.5)", fontSize: 11, fontWeight: 600, textTransform: "uppercase", marginBottom: 6 }}>{label}</label>
