@@ -475,18 +475,21 @@ function Simulador({ onGuardar, editData, onClearEdit }) {
 
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
 
-  const simular = () => {
-    if (!form.empresa) { setErr("Ingresa el nombre de la empresa."); return; }
-    if (form.monto <= 0 || form.tasa <= 0 || form.plazo <= 0) { setErr("Valores deben ser mayores a 0."); return; }
-    setErr("");
-    const cuota = calcularCuota(form.monto, form.tasa, form.plazo);
-    const tabla = generarAmortizacion(form.monto, form.tasa, form.plazo);
-    const totalPagado = cuota * form.plazo;
-    const analisis = analizarViabilidad(cuota, form.ingresos, form.gastos);
-    setResultado({ cuota, totalPagado, totalIntereses: totalPagado - form.monto, tabla, analisis, form: { ...form } });
-    setTablaVisible(false);
-    setGuardado(false);
-  };
+const simular = () => {
+  if (!form.empresa) { setErr("Ingresa el nombre de la empresa."); return; }
+  if (form.monto <= 0 || form.tasa <= 0 || form.plazo <= 0) { setErr("Valores deben ser mayores a 0."); return; }
+  if (form.ingresos < 0) { setErr("Los ingresos no pueden ser negativos."); return; }
+  if (form.gastos < 0) { setErr("Los gastos no pueden ser negativos."); return; }
+  if (form.gastos >= form.ingresos) { setErr("Los gastos deben ser menores a los ingresos."); return; }
+  setErr("");
+  const cuota = calcularCuota(form.monto, form.tasa, form.plazo);
+  const tabla = generarAmortizacion(form.monto, form.tasa, form.plazo);
+  const totalPagado = cuota * form.plazo;
+  const analisis = analizarViabilidad(cuota, form.ingresos, form.gastos);
+  setResultado({ cuota, totalPagado, totalIntereses: totalPagado - form.monto, tabla, analisis, form: { ...form } });
+  setTablaVisible(false);
+  setGuardado(false);
+};
 
   const guardar = () => {
     if (!resultado) return;
